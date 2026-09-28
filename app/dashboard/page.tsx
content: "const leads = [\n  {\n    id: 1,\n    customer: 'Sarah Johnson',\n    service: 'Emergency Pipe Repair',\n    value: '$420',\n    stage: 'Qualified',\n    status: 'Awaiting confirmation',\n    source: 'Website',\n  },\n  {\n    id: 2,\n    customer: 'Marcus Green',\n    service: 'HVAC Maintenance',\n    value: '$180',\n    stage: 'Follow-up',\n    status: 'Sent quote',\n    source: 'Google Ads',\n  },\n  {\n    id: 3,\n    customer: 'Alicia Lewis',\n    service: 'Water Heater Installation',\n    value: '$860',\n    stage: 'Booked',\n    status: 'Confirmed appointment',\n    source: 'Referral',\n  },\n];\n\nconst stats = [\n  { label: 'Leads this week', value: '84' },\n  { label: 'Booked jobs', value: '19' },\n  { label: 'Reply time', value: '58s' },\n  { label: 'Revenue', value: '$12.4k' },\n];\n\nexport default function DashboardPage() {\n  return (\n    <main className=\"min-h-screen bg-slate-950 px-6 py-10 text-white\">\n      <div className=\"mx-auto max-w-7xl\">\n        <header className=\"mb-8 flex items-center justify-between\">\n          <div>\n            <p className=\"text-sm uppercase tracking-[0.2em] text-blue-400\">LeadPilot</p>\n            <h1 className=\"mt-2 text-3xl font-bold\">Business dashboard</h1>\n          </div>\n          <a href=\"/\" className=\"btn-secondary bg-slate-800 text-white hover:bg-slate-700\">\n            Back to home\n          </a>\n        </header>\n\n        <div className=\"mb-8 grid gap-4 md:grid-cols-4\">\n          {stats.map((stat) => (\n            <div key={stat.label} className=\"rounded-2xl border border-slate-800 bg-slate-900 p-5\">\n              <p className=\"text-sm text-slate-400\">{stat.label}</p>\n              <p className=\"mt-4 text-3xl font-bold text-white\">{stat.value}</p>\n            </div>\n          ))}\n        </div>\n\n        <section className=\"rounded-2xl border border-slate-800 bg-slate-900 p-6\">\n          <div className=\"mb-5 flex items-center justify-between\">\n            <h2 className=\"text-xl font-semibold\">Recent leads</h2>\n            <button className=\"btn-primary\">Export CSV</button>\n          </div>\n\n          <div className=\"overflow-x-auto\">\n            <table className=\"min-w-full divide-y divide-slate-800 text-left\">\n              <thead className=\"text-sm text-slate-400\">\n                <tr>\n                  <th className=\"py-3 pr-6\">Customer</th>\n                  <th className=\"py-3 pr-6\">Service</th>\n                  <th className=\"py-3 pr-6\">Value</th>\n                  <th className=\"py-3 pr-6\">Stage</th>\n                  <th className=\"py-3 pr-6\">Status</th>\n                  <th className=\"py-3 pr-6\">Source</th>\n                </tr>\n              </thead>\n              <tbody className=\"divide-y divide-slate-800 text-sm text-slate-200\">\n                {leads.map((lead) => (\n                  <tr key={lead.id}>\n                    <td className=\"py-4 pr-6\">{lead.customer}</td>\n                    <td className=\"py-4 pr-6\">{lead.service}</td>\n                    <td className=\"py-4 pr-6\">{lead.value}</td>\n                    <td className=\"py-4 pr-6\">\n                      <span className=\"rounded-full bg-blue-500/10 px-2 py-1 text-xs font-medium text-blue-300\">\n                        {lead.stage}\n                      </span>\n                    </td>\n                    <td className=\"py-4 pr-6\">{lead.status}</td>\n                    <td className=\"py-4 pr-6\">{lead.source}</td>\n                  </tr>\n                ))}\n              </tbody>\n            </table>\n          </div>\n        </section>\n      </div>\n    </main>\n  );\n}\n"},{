@@ -1,0 +1,448 @@
+'use client';
+
+import { useState } from 'react';
+
+const defaultForm = {
+  businessName: 'BrightHome Plumbing',
+  customerName: 'Sarah Johnson',
+  email: 'sarah@brighthomeplumbing.com',
+  phone: '(415) 555-0134',
+  service: 'Emergency Pipe Repair',
+  message:
+    'Hi, my kitchen sink burst and I need urgent help. Can you come out today and give me a quote?',
+};
+
+export default function HomePage() {
+  const [form, setForm] = useState(defaultForm);
+  const [loading, setLoading] = useState(false);
+  const [result, setResult] = useState<any>(null);
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      const res = await fetch('/api/lead', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form),
+      });
+
+      const data = await res.json();
+      setResult(data);
+    } catch (error) {
+      setResult({
+        error: 'Something went wrong while generating the response.',
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <main className="min-h-screen bg-slate-950 text-white">
+      <section className="mx-auto max-w-7xl px-6 py-16">
+        <nav className="mb-16 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-600 font-bold text-white">
+              L
+            </div>
+            <div>
+              <p className="text-lg font-semibold">LeadPilot</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-3">
+            <a href="#features" className="text-sm text-slate-300 hover:text-white">
+              Features
+            </a>
+            <a href="#pricing" className="text-sm text-slate-300 hover:text-white">
+              Pricing
+            </a>
+            <a href="/dashboard" className="btn-secondary bg-slate-800 text-white hover:bg-slate-700">
+              Dashboard
+            </a>
+          </div>
+        </nav>
+
+        <div className="grid items-center gap-12 lg:grid-cols-2">
+          <div>
+            <span className="inline-flex rounded-full border border-blue-500/40 bg-blue-500/10 px-3 py-1 text-xs font-medium text-blue-300">
+              AI for local service businesses
+            </span>
+            <h1 className="mt-6 text-5xl font-bold tracking-tight text-white md:text-6xl">
+              Turn every inquiry into a booked job.
+            </h1>
+            <p className="mt-6 max-w-xl text-lg text-slate-300">
+              LeadPilot automatically responds to new customer inquiries, qualifies leads,
+              and sends follow-ups before your competitors do.
+            </p>
+
+            <div className="mt-8 flex flex-wrap gap-4">
+              <a href="#demo" className="btn-primary">
+                Try demo
+              </a>
+              <a href="#pricing" className="btn-secondary bg-slate-800 text-white hover:bg-slate-700">
+                See pricing
+              </a>
+            </div>
+
+            <div className="mt-10 flex items-center gap-8 text-sm text-slate-300">
+              <div>
+                <p className="text-2xl font-bold text-white">2.4x</p>
+                <p>More lead conversions</p>
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-white">1 min</p>
+                <p>Average first reply</p>
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-white">24/7</p>
+                <p>Lead coverage</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="rounded-2xl border border-slate-800 bg-slate-900 p-6 shadow-2xl shadow-blue-950/20">
+            <div className="mb-5 flex items-center justify-between">
+              <div>
+                <p className="text-sm text-slate-400">Live demo</p>
+                <h2 className="text-xl font-semibold">Inbound lead workflow</h2>
+              </div>
+              <span className="rounded-full bg-emerald-500/15 px-2.5 py-1 text-xs font-medium text-emerald-300">
+                Active
+              </span>
+            </div>
+
+            <div className="space-y-4 text-sm text-slate-300">
+              <div className="rounded-lg border border-slate-800 bg-slate-950 p-4">
+                <p className="text-xs uppercase tracking-wide text-slate-500">New lead</p>
+                <p className="mt-2 font-medium text-white">Sarah Johnson</p>
+                <p>Emergency Pipe Repair • 1:05 PM</p>
+              </div>
+              <div className="rounded-lg border border-slate-800 bg-slate-950 p-4">
+                <p className="text-xs uppercase tracking-wide text-slate-500">AI response</p>
+                <p className="mt-2 text-white">
+                  “Thanks for reaching out! We can dispatch a technician today...”
+                </p>
+              </div>
+              <div className="rounded-lg border border-slate-800 bg-slate-950 p-4">
+                <p className="text-xs uppercase tracking-wide text-slate-500">Conversion event</p>
+                <p className="mt-2 text-white">Booked same-day service call • +$420 revenue</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="features" className="mx-auto max-w-7xl px-6 py-20">
+        <div className="mb-10 text-center">
+          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-blue-400">
+            Why businesses switch
+          </p>
+          <h2 className="mt-3 text-3xl font-bold text-white">Everything you need to reply faster</h2>
+        </div>
+        <div className="grid gap-6 md:grid-cols-3">
+          {[
+            {
+              title: 'Instant replies',
+              text: 'Answer every lead within seconds, even after hours.',
+            },
+            {
+              title: 'Qualify leads',
+              text: 'Capture urgency, budget, and urgency before the job is assigned.',
+            },
+            {
+              title: 'Follow-up automation',
+              text: 'Keep leads warm with smart reminders and quote follow-ups.',
+            },
+          ].map((item) => (
+            <div key={item.title} className="rounded-2xl border border-slate-800 bg-slate-900 p-6">
+              <div className="mb-4 h-12 w-12 rounded-xl bg-blue-500/15 text-xl font-bold text-blue-300 flex items-center justify-center">
+                ✓
+              </div>
+              <h3 className="mb-2 text-xl font-semibold text-white">{item.title}</h3>
+              <p className="text-slate-300">{item.text}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section id="demo" className="bg-slate-900 py-20">
+        <div className="mx-auto max-w-6xl px-6">
+          <div className="mb-10 text-center">
+            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-blue-400">
+              Demo workflow
+            </p>
+            <h2 className="mt-3 text-3xl font-bold text-white">Generate a winning lead response</h2>
+          </div>
+
+          <div className="grid gap-8 lg:grid-cols-2">
+            <form onSubmit={handleSubmit} className="rounded-2xl border border-slate-800 bg-slate-950 p-6">
+              <div className="grid gap-4 md:grid-cols-2">
+                <label className="text-sm text-slate-300">
+                  Business name
+                  <input
+                    className="input-field mt-2"
+                    name="businessName"
+                    value={form.businessName}
+                    onChange={handleChange}
+                  />
+                </label>
+                <label className="text-sm text-slate-300">
+                  Contact name
+                  <input
+                    className="input-field mt-2"
+                    name="customerName"
+                    value={form.customerName}
+                    onChange={handleChange}
+                  />
+                </label>
+                <label className="text-sm text-slate-300">
+                  Email
+                  <input
+                    className="input-field mt-2"
+                    name="email"
+                    value={form.email}
+                    onChange={handleChange}
+                  />
+                </label>
+                <label className="text-sm text-slate-300">
+                  Phone
+                  <input
+                    className="input-field mt-2"
+                    name="phone"
+                    value={form.phone}
+                    onChange={handleChange}
+                  />
+                </label>
+              </div>
+
+              <label className="mt-4 block text-sm text-slate-300">
+                Service required
+                <select
+                  className="input-field mt-2"
+                  name="service"
+                  value={form.service}
+                  onChange={handleChange}
+                >
+                  <option>Emergency Pipe Repair</option>
+                  <option>HVAC Maintenance</option>
+                  <option>Water Heater Installation</option>
+                  <option>Electrical Repair</option>
+                </select>
+              </label>
+
+              <label className="mt-4 block text-sm text-slate-300">
+                Incoming message
+                <textarea
+                  className="input-field mt-2 min-h-[128px]"
+                  name="message"
+                  value={form.message}
+                  onChange={handleChange}
+                />
+              </label>
+
+              <button type="submit" className="btn-primary mt-6 w-full" disabled={loading}>
+                {loading ? 'Generating...' : 'Generate AI response'}
+              </button>
+            </form>
+
+            <div className="rounded-2xl border border-slate-800 bg-slate-950 p-6">
+              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-blue-400">
+                AI response preview
+              </p>
+
+              {result?.reply ? (
+                <div className="mt-5 rounded-xl border border-emerald-500/20 bg-emerald-500/5 p-4 text-slate-200">
+                  <p className="whitespace-pre-line">{result.reply}</p>
+                </div>
+              ) : (
+                <div className="mt-5 rounded-xl border border-slate-800 bg-slate-900 p-4 text-slate-400">
+                  Press the button to generate an instant customer reply and action plan.
+                </div>
+              )}
+
+              {result?.summary && (
+                <div className="mt-6 space-y-3 rounded-xl border border-slate-800 bg-slate-900 p-4 text-sm text-slate-300">
+                  <p>
+                    <span className="font-semibold text-white">Lead score:</span> {result.summary.leadScore}
+                  </p>
+                  <p>
+                    <span className="font-semibold text-white">Recommended next step:</span>{' '}
+                    {result.summary.nextStep}
+                  </p>
+                  <p>
+                    <span className="font-semibold text-white">Follow-up:</span> {result.summary.followUp}
+                  </p>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="pricing" className="mx-auto max-w-6xl px-6 py-20">
+        <div className="mb-10 text-center">
+          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-blue-400">Pricing</p>
+          <h2 className="mt-3 text-3xl font-bold text-white">Simple pricing for growth</h2>
+        </div>
+
+        <div className="grid gap-6 md:grid-cols-3">
+          {[
+            { name: 'Starter', price: '$49/mo', features: ['Unlimited leads', 'AI replies', 'Basic dashboard'] },
+            { name: 'Growth', price: '$99/mo', features: ['Everything in Starter', 'Advanced automations', 'Priority support'], highlighted: true },
+            { name: 'Scale', price: '$199/mo', features: ['Multi-location support', 'Custom workflows', 'Dedicated onboarding'] },
+          ].map((tier) => (
+            <div
+              key={tier.name}
+              className={`rounded-2xl border p-6 ${
+                tier.highlighted
+                  ? 'border-blue-500 bg-blue-500/5 shadow-lg shadow-blue-500/10'
+                  : 'border-slate-800 bg-slate-900'
+              }`}
+            >
+              <p className="text-sm uppercase tracking-[0.2em] text-slate-400">{tier.name}</p>
+              <p className="mt-4 text-4xl font-bold text-white">{tier.price}</p>
+              <ul className="mt-6 space-y-3 text-slate-300">
+                {tier.features.map((feature) => (
+                  <li key={feature}>• {feature}</li>
+                ))}
+              </ul>
+              <button className={`mt-8 w-full ${tier.highlighted ? 'btn-primary' : 'btn-secondary bg-slate-800 text-white hover:bg-slate-700'}`}>
+                Choose plan
+              </button>
+            </div>
+          ))}
+        </div>
+      </section>
+    </main>
+  );
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
